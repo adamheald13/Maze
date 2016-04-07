@@ -24,4 +24,5 @@ for cell i, i - n = N
 
 If the two cells are already connected, do not remove the wall.
 
-Done when all cells are connected to each other
+Done when all cells are connected to each other (there is one -1 (root) remaining
+in the disjoing set array)
