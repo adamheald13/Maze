@@ -17,6 +17,11 @@ private:
 
   void generateMaze();
   void initializeArrays();
+  bool isFullyConnected();
+  void removeRandomWall();
+  bool beenRemoved(int cell, int wall);
+  bool areConnected(int cell, int wall);
+  int getRoot(int cell);
 };
 
 #endif

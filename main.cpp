@@ -13,7 +13,7 @@ int main() {
 
   Maze maze(n, m);
 
-  maze.printMaze();
+  // maze.printMaze();
 
   return 0;
 }

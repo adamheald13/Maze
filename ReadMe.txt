@@ -18,9 +18,9 @@ Horizontal: wall numbers correspond to the upper cell
 Vertical: label east outer walls as already removed as you cannot remove edge walls
 
 for cell i, i - n = N
-            i + n = S
+            i = S
             i - 1 = W
-            i + 1 = E
+            i = E
 
 If the two cells are already connected, do not remove the wall.
 
