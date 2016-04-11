@@ -16,31 +16,17 @@ Maze::Maze(int n, int m) {
 void Maze::generateMaze() {
   initializeArrays();
 
-
-
-  // while(!isFullyConnected()) {
-  //   cout << "removing random wall" << endl;
-  //   removeRandomWall();
-  // }
-  removeRandomWall();
-
-  for(int i = 0; i < length; i++) {
-    cout << horzWalls[i] << " ";
+  while(!isFullyConnected()) {
+    removeRandomWall();
   }
-  cout << endl;
-
 }
 
 void Maze::removeRandomWall() {
-  int randCell = rand() % n * m;
+  int randCell = rand() % (n * m);
   int randWall = rand() % 4;
 
-  randCell = 0;
-  randWall = 1;
-
-  cout << "attempting to remove " << randWall << " from cell " << randCell << endl;
-
   if(!beenRemoved(randCell, randWall) && !areConnected(randCell, randWall)) {
+    //mark wall removed
     if(randWall == 0)
       horzWalls[randCell - n] = 1;
     else if(randWall == 1)
@@ -48,36 +34,67 @@ void Maze::removeRandomWall() {
     else if(randWall == 2)
       vertWalls[randCell - 1] = 1;
     else if(randWall == 3)
-      horzWalls[randCell] = 1; cout << randCell << endl;
+      horzWalls[randCell] = 1;
+
+    //add to disjoint set
+    int root = getRoot(randCell);
+    int newRoot = getRoot(getNewCell(randCell, randWall));
+
+    if(root < newRoot)
+      disjointSet[newRoot] = root;
+    else
+      disjointSet[root] = newRoot;
   }
 
   printMaze();
 }
 
+int Maze::getNewCell(int cell, int wall) {
+  int newCell = 0;
+
+  switch(wall) {
+    case 0 : newCell = cell - n;
+    break;
+    case 1 : newCell = cell + 1;
+    break;
+    case 2 : newCell = cell - 1;
+    break;
+    case 3 : newCell = cell + n;
+    break;
+  }
+
+  return newCell;
+}
+
 bool Maze::beenRemoved(int cell, int wall) {
+  //cells along left edge of maze can't have their left wall removed
+  if(cell % n == 0 && wall == 2)
+    return true;
+
+  //cells in bottom row of maze can't have their bottom wall removed
+  if(cell == n * (m - 1) && wall == 3)
+    return true;
+
+  if(cell < n && wall == 0)
+    return true;
+
+  if(cell == 0 && wall == 2)
+    return true;
+
   if(wall == 0 && horzWalls[cell - n] == 1)
     return true;
   else if(wall == 3 && horzWalls[cell] == 1)
     return true;
-  else if(wall == 1 && horzWalls[cell] == 1)
+  else if(wall == 1 && vertWalls[cell] == 1)
     return true;
   else if(wall == 2 && horzWalls[cell - 1] == 1)
     return true;
   else
-    cout << "false" << endl; return false;
+    return false;
 }
 
 bool Maze::areConnected(int cell, int wall) {
-  int newCell;
-
-  switch(wall) {
-    case 0 : newCell = cell - n;
-    case 1 : newCell = cell + 1;
-    case 2 : newCell = cell - 1;
-    case 3 : newCell = cell + n;
-  }
-
-  if(getRoot(cell) == getRoot(newCell))
+  if(getRoot(cell) == getRoot(getNewCell(cell, wall)))
     return true;
   else
     return false;
@@ -142,7 +159,7 @@ void Maze::printMaze() {
     for(int k = 0; k < n; k++) {
       if(horzWalls[l] == 0)
         cout << "_";
-      else if(j == n - 1)
+      else if(j == m - 1)
         cout << "_";
       else
         cout << " ";

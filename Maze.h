@@ -22,6 +22,7 @@ private:
   bool beenRemoved(int cell, int wall);
   bool areConnected(int cell, int wall);
   int getRoot(int cell);
+  int getNewCell(int cell, int wall);
 };
 
 #endif
